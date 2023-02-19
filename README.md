@@ -89,4 +89,18 @@ message.SetAttachFiles("./src/file2")
 message.SetAttachFiles("./src/file3")
 ```
 
+Also you can use your own connection for sending mail. You can use this feature for sending mail with EXCHANGE mail servers. Use the NewDialer method for creating a new mailer instance.
 
+```golang
+dialer := mailer.SMTPDialer{
+    Host: "smtp.company.com",
+    Port: "587",
+}
+
+sender := mailer.NewDialer(&dialer)
+
+message := mailer.NewMessage("Hello World", "Hello World")
+message.SetTo([]string{"blallala@company.com"})
+message.SetAttachFiles("./src/file")
+sender.SendMail(message)
+```
