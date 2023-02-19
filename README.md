@@ -8,10 +8,6 @@ It is very easy to use and can work integrated with all mail providers (Gmail, H
 
 You can send mail with attachments, html body, plain text body, etc. You can also send mail with multiple recipients.
 
-## **Documentation**
-[![Go Reference](https://pkg.go.dev/badge/github.com/veyselaksin/gomailer.svg)](https://pkg.go.dev/github.com/veyselaksin/gomailer)
-
-
 # **Important Note**
 Why you need to use this library? Because you can not send mail with attachments using the net/smtp package. You can only send plain text mail with this package. So, if you want to send mail with attachments, you need to use this library. Also it is not complicated to use like other mail libraries.
 
