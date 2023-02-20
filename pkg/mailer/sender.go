@@ -94,7 +94,7 @@ func (s *sender) SendMailTLS(m *message, tlsConfig *tls.Config) error {
 	s.client.StartTLS(tlsConfig)
 
 	// Set the sender and recipient first before calling Data() to send the email.
-	if err := s.client.Mail(s.auth.Username); err != nil {
+	if err := s.client.Mail(m.GetFrom()); err != nil {
 		return err
 	}
 

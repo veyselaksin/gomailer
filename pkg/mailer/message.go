@@ -10,6 +10,7 @@ import (
 
 // Message is a struct that contains the information for an email message.
 type message struct {
+	from        string
 	to          []string
 	cc          []string
 	bcc         []string
@@ -56,6 +57,16 @@ var _ IMessage = (*message)(nil)
 // The body is the body of the email message. The body can be in HTML format.
 func NewMessage(subject, body string) *message {
 	return &message{subject: subject, body: body, attachments: make(map[string][]byte)}
+}
+
+// SetFrom is a method that sets the To field of the message. The To field is a list of email addresses.
+func (m *message) SetFrom(from string) {
+	m.from = from
+}
+
+// GetFrom is a method that returns the To field of the message.
+func (m *message) GetFrom() string {
+	return m.from
 }
 
 // SetTo is a method that sets the To field of the message. The To field is a list of email addresses.
@@ -151,16 +162,23 @@ func (m *message) ToBytes() []byte {
 	if hasAttachment {
 		message += "Content-Type: multipart/mixed; boundary=\"BOUNDARY\"\n\n"
 		message += "--BOUNDARY\n"
-		message += "Content-Transfer-Encoding: base64\n"
+		message += "Content-Type: text/html; charset=utf-8\n"
+		message += "Content-Transfer-Encoding: quoted-printable\n\n"
+		message += m.GetBody() + "\n\n"
+		message += "--BOUNDARY\n\n"
+
 		for k, v := range m.GetAttachFiles() {
 			message += "--BOUNDARY\n"
 			message += "Content-Type: " + http.DetectContentType(v) + "; name=\"" + k + "\"\n"
 			message += "Content-Transfer-Encoding: base64\n"
-			message += "Content-Disposition: attachment; filename=\"" + k + "\"\n"
-			message += base64.StdEncoding.EncodeToString(v) + "\n"
+			message += "Content-Disposition: attachment; filename=\"" + k + "\"\n\n"
+			message += base64.StdEncoding.EncodeToString(v) + "\n\n"
+			message += "--BOUNDARY\n\n"
+
 		}
 
 		message += "--BOUNDARY--\n"
+
 	} else {
 		message += "Content-Type: text/plain; charset=utf-8\n"
 		message += m.GetBody() + "\n"
