@@ -157,16 +157,15 @@ func (m *message) ToBytes() []byte {
 	message += "Body: " + m.GetBody() + "\n"
 	message += "MIME-Version: 1.0\n"
 
+	message += "Content-Type: multipart/mixed; boundary=\"BOUNDARY\"\n\n"
+	message += "--BOUNDARY\n"
 	// If there are attachments, the message is in the multipart/mixed format.
 	// Otherwise, the message is in the text/plain format.
 	if hasAttachment {
-		message += "Content-Type: multipart/mixed; boundary=\"BOUNDARY\"\n\n"
-		message += "--BOUNDARY\n"
 		message += "Content-Type: text/html; charset=utf-8\n"
 		message += "Content-Transfer-Encoding: quoted-printable\n\n"
 		message += m.GetBody() + "\n\n"
 		message += "--BOUNDARY\n\n"
-
 		for k, v := range m.GetAttachFiles() {
 			message += "--BOUNDARY\n"
 			message += "Content-Type: " + http.DetectContentType(v) + "; name=\"" + k + "\"\n"
@@ -180,8 +179,11 @@ func (m *message) ToBytes() []byte {
 		message += "--BOUNDARY--\n"
 
 	} else {
-		message += "Content-Type: text/plain; charset=utf-8\n"
+		message += "Content-Type: text/html; charset=utf-8\n"
+		message += "Content-Transfer-Encoding: quoted-printable\n\n"
 		message += m.GetBody() + "\n"
+		message += "--BOUNDARY--\n\n"
+
 	}
 
 	return []byte(message)
