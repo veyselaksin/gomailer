@@ -98,7 +98,8 @@ func (s *sender) SendMailTLS(m *message, tlsConfig *tls.Config) error {
 		return err
 	}
 
-	for _, k := range m.GetTo() {
+	recipients := append(append(m.GetTo(), m.GetCc()...), m.GetBcc()...)
+	for _, k := range recipients {
 		s.client.Rcpt(k)
 	}
 
