@@ -163,7 +163,7 @@ func (m *message) ToBytes() []byte {
 	// Otherwise, the message is in the text/plain format.
 	if hasAttachment {
 		message += "Content-Type: text/html; charset=utf-8\n"
-		message += "Content-Transfer-Encoding: quoted-printable\n\n"
+		message += "Content-Transfer-Encoding: 8bit\n\n"
 		message += m.GetBody() + "\n\n"
 		message += "--BOUNDARY\n\n"
 		for k, v := range m.GetAttachFiles() {
@@ -180,7 +180,7 @@ func (m *message) ToBytes() []byte {
 
 	} else {
 		message += "Content-Type: text/html; charset=utf-8\n"
-		message += "Content-Transfer-Encoding: quoted-printable\n\n"
+		message += "Content-Transfer-Encoding: 8bit\n\n"
 		message += m.GetBody() + "\n"
 		message += "--BOUNDARY--\n\n"
 
