@@ -52,6 +52,7 @@ type sender struct {
 	auth      *Authentication
 }
 
+var Client *smtp.Client
 var _ ISender = (*sender)(nil)
 
 // NewPlainAuth is a function that creates a new sender. The Authentication struct is required.
@@ -75,7 +76,12 @@ func NewPlainAuth(auth *Authentication) *sender {
 //	Host: The host for the SMTP server.
 //	Port: The port for the SMTP server.
 func NewDialer(smtpDialer *SMTPDialer) *sender {
-	client, _ := smtp.Dial(smtpDialer.Host + ":" + smtpDialer.Port)
+	client, err := smtp.Dial(smtpDialer.Host + ":" + smtpDialer.Port)
+	if err != nil {
+		panic(err)
+	}
+
+	Client = client
 	return &sender{client: client, authType: "dialer"}
 }
 
